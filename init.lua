@@ -1,7 +1,8 @@
 --[[
 
 =====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
+=se
+======= READ THIS BEFORE CONTINUING ====================
 =====================================================================
 ========                                    .-----.          ========
 ========         .----------------------.   | === |          ========
@@ -109,6 +110,11 @@ vim.o.mouse = 'a'
 
 -- Don't show the mode, since it's already in the status line
 vim.o.showmode = false
+
+-- Recommended 'completeopt' settings for a better autocompletion experience
+-- 'menuone' ensures the completion menu is shown, even with one item.
+-- 'popup' displays extra information in a separate popup window.
+vim.opt.completeopt = { 'menuone', 'popup' }
 
 -- Sync clipboard between OS and Neovim.
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
@@ -964,14 +970,24 @@ require('lazy').setup({
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
 
+  -- In your github/copilot.vim plugin entry
   {
     'github/copilot.vim',
     event = 'InsertEnter',
     config = function()
+      vim.g.copilot_no_tab_map = true -- Disable the default <Tab> mapping
       vim.g.copilot_filetypes = {
-        ['*'] = true, -- Explicitly enable Copilot for all file types
+        ['*'] = true,
       }
     end,
+    keys = {
+      -- Use 'i' for insert mode mappings
+      { '<leader>cn', '<Plug>(copilot-next)', mode = 'i', desc = 'Next Copilot suggestion' },
+      { '<leader>cp', '<Plug>(copilot-previous)', mode = 'i', desc = 'Previous Copilot suggestion' },
+      { '<leader>ca', '<Plug>(copilot-accept)', mode = 'i', desc = 'Accept Copilot suggestion' },
+      { '<leader>cd', '<cmd>Copilot disable<cr>', mode = 'n', desc = 'Disable Copilot' },
+      { '<leader>ce', '<cmd>Copilot enable<cr>', mode = 'n', desc = 'Enable Copilot' },
+    },
   },
   {
     'CopilotC-Nvim/CopilotChat.nvim',
@@ -981,16 +997,74 @@ require('lazy').setup({
       { 'github/copilot.vim' },
       -- Optional dependencies for enhanced features
       { 'nvim-lua/plenary.nvim', branch = 'master' },
+      { 'nvim-telescope/telescope.nvim' },
     },
     config = function()
       require('CopilotChat').setup()
     end,
+    keys = {
+      {
+        '<leader>cc',
+        function()
+          require('CopilotChat').toggle()
+        end,
+        desc = 'Toggle Copilot Chat',
+      },
+      {
+        '<leader>ce',
+        function()
+          require('CopilotChat.integrations.telescope').prompt()
+        end,
+        mode = { 'n', 'v' },
+        desc = 'CopilotChat: Explain code',
+      },
+      {
+        '<leader>ct',
+        function()
+          require('CopilotChat.integrations.telescope').prompt()
+        end,
+        mode = { 'n', 'v' },
+        desc = 'CopilotChat: Generate tests',
+      },
+    },
   },
+  -- Diffview is a plugin that allows you to view diffs in a more visual way.
+  -- It can be used to view diffs of commits, branches, and more.
   {
     'sindrets/diffview.nvim',
     dependencies = {
       'nvim-lua/plenary.nvim',
+      -- nvim-web-devicons is optional but provides icons in the file panel
+      'nvim-tree/nvim-web-devicons',
     },
+    keys = {
+      -- To quickly open a diff of your working directory
+      { '<leader>gd', '<cmd>DiffviewOpen<cr>', desc = 'Open Diffview' },
+      -- To open a diff against the last commit
+      { '<leader>gD', '<cmd>DiffviewOpen HEAD^<cr>', desc = 'Open Diffview HEAD^' },
+      -- To open the file history for the current file
+      { '<leader>gh', '<cmd>DiffviewFileHistory<cr>', desc = 'File History' },
+      -- To close Diffview
+      { '<leader>gc', '<cmd>DiffviewClose<cr>', desc = 'Close Diffview' },
+    },
+  },
+  -- plugin not working
+  -- {
+  --   'amitds1997/remote-nvim.nvim',
+  --   version = '', -- Pin to GitHub releases
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim', -- For standard functions
+  --     'MunifTanjim/nui.nvim', -- To build the plugin UI
+  --     'nvim-telescope/telescope.nvim', -- For picking b/w different remote methods
+  --   },
+  --   config = true,
+  -- },
+  {
+    'chipsenkbeil/distant.nvim',
+    branch = 'v0.3',
+    config = function()
+      require('distant'):setup()
+    end,
   },
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -1001,10 +1075,10 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
