@@ -1048,22 +1048,32 @@ require('lazy').setup({
       { '<leader>gc', '<cmd>DiffviewClose<cr>', desc = 'Close Diffview' },
     },
   },
-  -- plugin not working
-  -- {
-  --   'amitds1997/remote-nvim.nvim',
-  --   version = '', -- Pin to GitHub releases
-  --   dependencies = {
-  --     'nvim-lua/plenary.nvim', -- For standard functions
-  --     'MunifTanjim/nui.nvim', -- To build the plugin UI
-  --     'nvim-telescope/telescope.nvim', -- For picking b/w different remote methods
-  --   },
-  --   config = true,
-  -- },
   {
-    'chipsenkbeil/distant.nvim',
-    branch = 'v0.3',
+    'ThePrimeagen/harpoon',
+    branch = 'harpoon2',
+    dependencies = { { 'nvim-lua/plenary.nvim' } },
     config = function()
-      require('distant'):setup()
+      local harpoon = require 'harpoon'
+      -- set keymaps
+      vim.keymap.set('n', '<leader>a', function()
+        harpoon:list():append()
+      end, { desc = '[H]arpoon: Add File' })
+      vim.keymap.set('n', '<leader>e', function()
+        harpoon.ui:toggle_quick_menu(harpoon:list())
+      end, { desc = '[H]arpoon: Toggle Quick Menu' })
+
+      vim.keymap.set('n', '<C-h>', function()
+        harpoon:list():select(1)
+      end, { desc = '[H]arpoon: Select File 1' })
+      vim.keymap.set('n', '<C-t>', function()
+        harpoon:list():select(2)
+      end, { desc = '[H]arpoon: Select File 2' })
+      vim.keymap.set('n', '<C-n>', function()
+        harpoon:list():select(3)
+      end, { desc = '[H]arpoon: Select File 3' })
+      vim.keymap.set('n', '<C-s>', function()
+        harpoon:list():select(4)
+      end, { desc = '[H]arpoon: Select File 4' })
     end,
   },
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
