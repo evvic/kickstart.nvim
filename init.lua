@@ -1048,6 +1048,17 @@ require('lazy').setup({
       { '<leader>gc', '<cmd>DiffviewClose<cr>', desc = 'Close Diffview' },
     },
   },
+  -- plugin not working
+  -- {
+  --   'amitds1997/remote-nvim.nvim',
+  --   version = '', -- Pin to GitHub releases
+  --   dependencies = {
+  --     'nvim-lua/plenary.nvim', -- For standard functions
+  --     'MunifTanjim/nui.nvim', -- To build the plugin UI
+  --     'nvim-telescope/telescope.nvim', -- For picking b/w different remote methods
+  --   },
+  --   config = true,
+  -- },
   {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
@@ -1091,6 +1102,13 @@ require('lazy').setup({
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
   require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      -- Optional: Add your custom configuration here
+    },
+    lazy = false, -- Load the plugin on startup
+  },
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
